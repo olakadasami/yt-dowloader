@@ -1,0 +1,31 @@
+# ---------- Development Dockerfile ----------
+FROM node:20-alpine
+
+# Install ffmpeg + yt-dlp
+RUN apk add --no-cache \
+    ffmpeg \
+    alsa-lib \
+    libpulse \
+    libxcb \
+    libx11 \
+    libxext \
+    libxfixes \
+    curl \
+ && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp \
+ && chmod a+rx /usr/local/bin/yt-dlp
+
+
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install dependencies (will be cached)
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
+
+# Expose ports for Vite + Nitro
+EXPOSE 3000
+
+# Default command for dev mode
+CMD ["pnpm", "run", "dev"]
