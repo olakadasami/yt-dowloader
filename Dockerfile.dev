@@ -28,4 +28,4 @@ RUN pnpm install
 EXPOSE 3000
 
 # Default command for dev mode
-CMD ["pnpm", "run", "dev"]
+CMD ["pnpm", "run", "dev", "--host"]
