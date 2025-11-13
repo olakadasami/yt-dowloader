@@ -3,32 +3,46 @@ import { useState } from "react";
 export default function Hero() {
   const [text, setText] = useState("");
 
-  const handlePaste = async () => {
-    try {
-      const clipboardText = await navigator.clipboard.readText();
-      setText(clipboardText);
-    } catch (err) {
-      console.error("Failed to read clipboard: ", err);
-      alert(
-        "Clipboard access denied. Try using HTTPS or allowing permissions."
-      );
-    }
-  };
+  // const handlePaste = async () => {
+  //   try {
+  //     const clipboardText = await navigator.clipboard.readText();
+  //     setText(clipboardText);
+  //   } catch (err) {
+  //     console.error("Failed to read clipboard: ", err);
+  //     alert(
+  //       "Clipboard access denied. Try using HTTPS or allowing permissions."
+  //     );
+  //   }
+  // };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
   };
   const handleClick = async () => {
-    const res = await fetch("/api/hello/samuel");
-    const json = await res.json();
-    console.log(json);
-    if (!text) handlePaste();
+    // handlePaste();
+
+    try {
+      const data = await fetch("/api/download", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: text }),
+      });
+      console.log(data);
+      const json = await data.json();
+      console.log(json);
+    } catch (error) {
+      console.error("Failed to start download:", error);
+    }
   };
   return (
-    <div className="hero bg-base-200 min-h-screen">
+    <main className="hero bg-base-200 min-h-[90vh]">
       <div className="hero-content text-center">
         <div className="max-w-md">
-          <h1 className="text-3xl font-bold">Free Online Video Downloader</h1>
+          <h1 className="text-3xl font-bold mb-6">
+            Free Online Video Downloader
+          </h1>
 
           <div className="join">
             <label className="input validator join-item">
@@ -64,6 +78,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
